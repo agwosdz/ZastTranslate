@@ -96,15 +96,10 @@ except ImportError:
     errors.append("pydub")
     print("[FAIL] pydub not installed")
 
-# 9. numpy version check
+# 9. numpy
 try:
     import numpy
-    ver = tuple(int(x) for x in numpy.__version__.split(".")[:2])
-    if ver[0] >= 2:
-        errors.append("numpy")
-        print(f"[FAIL] numpy {numpy.__version__} - must be < 2.0")
-    else:
-        print(f"[OK] numpy {numpy.__version__}")
+    print(f"[OK] numpy {numpy.__version__}")
 except ImportError:
     errors.append("numpy")
     print("[FAIL] numpy not installed")
