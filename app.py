@@ -1,5 +1,30 @@
-import gradio as gr
 import os
+import sys
+
+# Register NVIDIA DLL directories so ctranslate2 can find cublas64_12.dll etc.
+# (nvidia-cublas-cu12 installs DLLs to site-packages/nvidia/*/bin/)
+# We prepend to PATH because ctranslate2 uses LoadLibrary which doesn't
+# respect os.add_dll_directory().
+if sys.platform == "win32":
+    _sp = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".venv", "Lib", "site-packages", "nvidia")
+    if not os.path.isdir(_sp):
+        import site
+        for _s in site.getsitepackages():
+            _candidate = os.path.join(_s, "nvidia")
+            if os.path.isdir(_candidate):
+                _sp = _candidate
+                break
+    if os.path.isdir(_sp):
+        _dll_dirs = []
+        for _sub in os.listdir(_sp):
+            _bin = os.path.join(_sp, _sub, "bin")
+            if os.path.isdir(_bin):
+                os.add_dll_directory(_bin)
+                _dll_dirs.append(_bin)
+        if _dll_dirs:
+            os.environ["PATH"] = os.pathsep.join(_dll_dirs) + os.pathsep + os.environ.get("PATH", "")
+
+import gradio as gr
 import shutil
 import time
 import json

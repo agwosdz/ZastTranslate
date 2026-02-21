@@ -37,6 +37,8 @@ dependencies = [
     "tokenizers",
     # Core
     "typing-extensions>=4.10.0",
+    # CUDA 12 compat — ctranslate2 (whisperx) needs cublas64_12.dll
+    "nvidia-cublas-cu12",
 ]
 
 # ---------- uv configuration ----------
