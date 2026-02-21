@@ -1,5 +1,28 @@
-import gradio as gr
 import os
+import sys
+
+# Register NVIDIA DLL directories so ctranslate2 can find cublas64_12.dll etc.
+# (nvidia-cublas-cu12 installs DLLs to site-packages/nvidia/*/bin/)
+if sys.platform == "win32":
+    _sp = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".venv", "Lib", "site-packages", "nvidia")
+    if not os.path.isdir(_sp):
+        import site
+        for _s in site.getsitepackages():
+            _candidate = os.path.join(_s, "nvidia")
+            if os.path.isdir(_candidate):
+                _sp = _candidate
+                break
+    if os.path.isdir(_sp):
+        _dll_dirs = []
+        for _sub in os.listdir(_sp):
+            _bin = os.path.join(_sp, _sub, "bin")
+            if os.path.isdir(_bin):
+                os.add_dll_directory(_bin)
+                _dll_dirs.append(_bin)
+        if _dll_dirs:
+            os.environ["PATH"] = os.pathsep.join(_dll_dirs) + os.pathsep + os.environ.get("PATH", "")
+
+import gradio as gr
 import shutil
 import time
 import json
@@ -129,8 +152,8 @@ def step2_transcribe(lang_source, model_size, progress=gr.Progress()):
     state.video_info['background'] = stems['background']
     separator.cleanup()
     
-    progress(0.4, "Transcribing with Whisper...")
-    # Map display names to Whisper language codes
+    progress(0.4, "Transcribing with WhisperX...")
+    # Map display names to WhisperX language codes
     source_lang_map = {
         "Auto": None, "French": "fr", "English": "en", "Spanish": "es",
         "German": "de", "Italian": "it", "Portuguese": "pt", "Japanese": "ja",
@@ -143,7 +166,7 @@ def step2_transcribe(lang_source, model_size, progress=gr.Progress()):
     res = transcriber.transcribe(
         state.video_info['audio_16k'], 
         language=lang_code,
-        model_size=model_size,
+        enable_diarization=False
     )
     state.segments = res['segments']
     state.video_info['detected_language'] = res['language']

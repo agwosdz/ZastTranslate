@@ -13,6 +13,8 @@ dependencies = [
     "gradio>=4.0.0",
     # Video download
     "yt-dlp>=2024.0.0",
+    # Speech recognition
+    "whisperx",
     # LLM translation
     "transformers>=4.35.0",
     "sentencepiece",
@@ -36,6 +38,8 @@ dependencies = [
     "tokenizers",
     # Core
     "typing-extensions>=4.10.0",
+    # CUDA 12 compat — ctranslate2 (whisperx) needs cublas64_12.dll
+    "nvidia-cublas-cu12",
 ]
 
 # ---------- uv configuration ----------
@@ -60,3 +64,4 @@ explicit = true
 [tool.uv.sources]
 torch = { index = "pytorch-cu130" }
 torchaudio = { index = "pytorch-cu130" }
+whisperx = { git = "https://github.com/m-bain/whisperX.git" }
