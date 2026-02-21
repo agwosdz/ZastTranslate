@@ -55,14 +55,13 @@ except ImportError as e:
     errors.append("transformers")
     print(f"[FAIL] transformers: {e}")
 
-# 6. WhisperX
+# 6. Whisper (via transformers pipeline)
 try:
-    import whisperx
-    ver = getattr(whisperx, "__version__", "installed")
-    print(f"[OK] whisperx {ver}")
+    from transformers import pipeline as _pipeline
+    print(f"[OK] Whisper (transformers pipeline)")
 except ImportError:
-    errors.append("whisperx")
-    print("[FAIL] whisperx not installed")
+    errors.append("transformers")
+    print("[FAIL] transformers pipeline not available")
 
 # 7. Demucs
 try:

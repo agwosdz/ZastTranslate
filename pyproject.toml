@@ -8,12 +8,11 @@ dependencies = [
     # PyTorch (routed to cu130 index via [tool.uv.sources])
     "torch==2.10.0",
     "torchaudio==2.10.0",
+    "torchcodec",
     # Web UI
     "gradio>=4.0.0",
     # Video download
     "yt-dlp>=2024.0.0",
-    # Speech recognition
-    "whisperx",
     # LLM translation
     "transformers>=4.35.0",
     "sentencepiece",
@@ -37,8 +36,6 @@ dependencies = [
     "tokenizers",
     # Core
     "typing-extensions>=4.10.0",
-    # CUDA 12 compat — ctranslate2 (whisperx) needs cublas64_12.dll
-    "nvidia-cublas-cu12",
 ]
 
 # ---------- uv configuration ----------
@@ -46,6 +43,8 @@ dependencies = [
 [tool.uv]
 # Allow packages to be found across multiple indexes without conflict
 index-strategy = "unsafe-best-match"
+# Copy files instead of hardlinking (needed when cache and project are on different drives)
+link-mode = "copy"
 
 # Override whisperx's torch~=2.8.0 constraint to use our version
 override-dependencies = [
@@ -61,4 +60,3 @@ explicit = true
 [tool.uv.sources]
 torch = { index = "pytorch-cu130" }
 torchaudio = { index = "pytorch-cu130" }
-whisperx = { git = "https://github.com/m-bain/whisperX.git" }
